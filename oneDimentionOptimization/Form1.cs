@@ -13,7 +13,7 @@ namespace oneDimentionOptimization
 {
     public partial class Form1 : Form
     {
-        int a0, b0;
+        int a0, b0; //-6 1
         public Form1()
         {
             InitializeComponent();
