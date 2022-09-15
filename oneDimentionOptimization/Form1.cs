@@ -8,12 +8,14 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace oneDimentionOptimization
 {
     public partial class Form1 : Form
     {
-        int a0, b0; //-6 1
+        double a0, b0; //-6 1
+        double E; 
         public Form1()
         {
             InitializeComponent();
@@ -22,7 +24,11 @@ namespace oneDimentionOptimization
         private void CalculateButton_Click(object sender, EventArgs e)
         {
             StatusRichTextBox.Clear();
-            //–2x^3 + 6x^2 + 4
+            //-2*x^3 + 6*x^2 + 4
+            //StatusRichTextBox.Text += "Ответ: x = " + new DataTable().Compute("–2*(-4.25)*(-4.25)*(-4.25)+6*(-4.25)*(-4.25)+4", null).ToString();
+            //return;
+            chart1.Series[0].Points.Clear();
+            chart1.Series[1].Points.Clear();
             try
             {
                 string symbolOfVariable = SymbolOfVariableTextBox.Text;
@@ -40,27 +46,92 @@ namespace oneDimentionOptimization
                 {
                     function += item;
                 }
-                string toCalculate = string.Empty;
+                string toCalculateOrigin = string.Empty;
                 for(int i = 0; i < function.Length; i++)
                 {
                     if (function[i] == '^')
                     {
                         for(int j = 1; j < int.Parse(function[i+1].ToString()); j++)
                         {
-                            toCalculate += "*"+ function[i - 1];
+                            toCalculateOrigin += "*"+ function[i - 1];
                         }
                         i++;
                         continue;
                     }
-                    toCalculate+= function[i];
+                    toCalculateOrigin+= function[i];
                 }
-                a0 = int.Parse(a0TextBox.Text);
-                b0 = int.Parse(b0TextBox.Text);
-                int d = 5;
-                toCalculate = toCalculate.Replace(symbolOfVariable, d.ToString());
-                string value = new DataTable().Compute(toCalculate, null).ToString();
-                StatusRichTextBox.Text += value;
+                //toCalculateOrigin = toCalculateOrigin.Replace(symbolOfVariable, "(" + "4" + ")");
+                ////double value = double.Parse(new DataTable().Compute(toCalculateOrigin, null).ToString());
+                //StatusRichTextBox.Text += "Ответ: x = " + new DataTable().Compute(toCalculateOrigin, null).ToString();
+                a0 = double.Parse(a0TextBox.Text);
+                b0 = double.Parse(b0TextBox.Text);
+                E = double.Parse(EtextBox.Text);
+                for(double i = a0; i <= b0; i += 0.01)
+                {
+                    string toCalculate1 = toCalculateOrigin.Replace(symbolOfVariable, "(" + i.ToString() + ")");
+                    toCalculate1 = toCalculate1.Replace(',', '.');
+                    double y = double.Parse(new DataTable().Compute(toCalculate1, null).ToString());
+                    chart1.Series[1].Points.AddXY(i, y);
+                }
+                double x0,b,a,x1,x2;
+                a = a0;
+                b = b0;
+                double res = 0;
+                if (radioButton1.Checked)   //половинного деления
+                {
+                    x0 = (a - b) / 2;
+                    x1 = a0 + 0.25 * (b0 - a0);
+                    x2 = b0 - 0.25 * (b0 - a0);
+                    while ((b-a>E))
+                    {
+                        string toCalculate1 = toCalculateOrigin.Replace(symbolOfVariable, "(" + x1.ToString() + ")");
+                        toCalculate1 = toCalculate1.Replace(',', '.');
+                        double value1 = double.Parse(new DataTable().Compute(toCalculate1, null).ToString());
+                        string toCalculate2 = toCalculateOrigin.Replace(symbolOfVariable, "(" + x2.ToString() + ")");
+                        toCalculate2 = toCalculate2.Replace(',', '.');
+                        double value2 = double.Parse(new DataTable().Compute(toCalculate2, null).ToString());
+                        StatusRichTextBox.Text += Environment.NewLine + "f(x1) < f(x2), f(x1) = " + value1.ToString() + ", f(x2) = " + value2.ToString() +
+                                Environment.NewLine + "x1 = " + x1.ToString() + ", x2 = " + x2.ToString();
+                        chart1.Series[0].Points.AddXY(x1, value1);
+                        chart1.Series[0].Points.AddXY(x2, value2);
+                        if (value1 > value2)
+                        {
+                            res = x2;
+                            a = x0;
+                            x0 = x2;
+                            x1 = a + 0.25 * (b - a);
+                            x2 = b - 0.25 * (b - a);
+                            
+                        }
+                        else if (value1 < value2)
+                        {
+                            res = x1;
+                            b = x0;
+                            x0 = x1;
+                            x1 = a + 0.25 * (b - a);
+                            x2 = b - 0.25 * (b - a);
 
+                        }
+                        else
+                        {
+                            res = x1;
+                            
+                            break;
+                        }
+                    }
+                    
+                    ResultLabel.Text = symbolOfVariable+" = " + res.ToString();
+                    StatusRichTextBox.Text += Environment.NewLine+ Environment.NewLine+"Ответ: x = " + res.ToString();
+
+                }
+                else if (radioButton2.Checked)  //золотго сечения
+                {
+
+                }
+                else if (radioButton3.Checked)  //Фибоначчи
+                {
+
+                }
 
                 
             }
