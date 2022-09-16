@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -82,7 +83,9 @@ namespace oneDimentionOptimization
                     x0 = (a - b) / 2;
                     x1 = a0 + 0.25 * (b0 - a0);
                     x2 = b0 - 0.25 * (b0 - a0);
-                    while ((b-a>E))
+                    //int count = 0;
+                    //while(count < 100)
+                    while ((Math.Abs(b)+Math.Abs(a))>E)
                     {
                         string toCalculate1 = toCalculateOrigin.Replace(symbolOfVariable, "(" + x1.ToString() + ")");
                         toCalculate1 = toCalculate1.Replace(',', '.');
@@ -90,31 +93,37 @@ namespace oneDimentionOptimization
                         string toCalculate2 = toCalculateOrigin.Replace(symbolOfVariable, "(" + x2.ToString() + ")");
                         toCalculate2 = toCalculate2.Replace(',', '.');
                         double value2 = double.Parse(new DataTable().Compute(toCalculate2, null).ToString());
-                        StatusRichTextBox.Text += Environment.NewLine + "f(x1) < f(x2), f(x1) = " + value1.ToString() + ", f(x2) = " + value2.ToString() +
-                                Environment.NewLine + "x1 = " + x1.ToString() + ", x2 = " + x2.ToString();
+                        
                         chart1.Series[0].Points.AddXY(x1, value1);
                         chart1.Series[0].Points.AddXY(x2, value2);
+                        //count++;
                         if (value1 > value2)
                         {
+                            StatusRichTextBox.Text += Environment.NewLine + "f(x1) > f(x2), f(x1) = " + value1.ToString() + ", f(x2) = " + value2.ToString() +
+                                Environment.NewLine + "x1 = " + x1.ToString() + ", x2 = " + x2.ToString();
                             res = x2;
                             a = x0;
-                            x0 = x2;
+                            x0 = x1;
                             x1 = a + 0.25 * (b - a);
                             x2 = b - 0.25 * (b - a);
                             
                         }
                         else if (value1 < value2)
                         {
+                            StatusRichTextBox.Text += Environment.NewLine + "f(x1) < f(x2), f(x1) = " + value1.ToString() + ", f(x2) = " + value2.ToString() +
+                                Environment.NewLine + "x1 = " + x1.ToString() + ", x2 = " + x2.ToString();
                             res = x1;
                             b = x0;
-                            x0 = x1;
+                            x0 = x2;
                             x1 = a + 0.25 * (b - a);
                             x2 = b - 0.25 * (b - a);
 
                         }
                         else
                         {
-                            res = x1;
+                            StatusRichTextBox.Text += Environment.NewLine + "f(x1) = f(x2), f(x1) = " + value1.ToString() + ", f(x2) = " + value2.ToString() +
+                                Environment.NewLine + "x1 = " + x1.ToString() + ", x2 = " + x2.ToString();
+                            res = x0;
                             
                             break;
                         }
@@ -126,6 +135,10 @@ namespace oneDimentionOptimization
                 }
                 else if (radioButton2.Checked)  //золотго сечения
                 {
+                    // x
+                    //double s = b0 - a0;
+                    //double s1 = b0 - x2;
+                    //double s2 = s-2*s1;
 
                 }
                 else if (radioButton3.Checked)  //Фибоначчи
