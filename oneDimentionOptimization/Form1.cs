@@ -78,6 +78,7 @@ namespace oneDimentionOptimization
                 a = a0;
                 b = b0;
                 double res = 0;
+                int count = 0;
                 if (radioButton1.Checked)   //половинного деления
                 {
                     x0 = (a - b) / 2;
@@ -87,6 +88,7 @@ namespace oneDimentionOptimization
                     //while(count < 100)
                     while ((Math.Abs(b-a))>E)
                     {
+                        count++;
                         string toCalculate1 = toCalculateOrigin.Replace(symbolOfVariable, "(" + x1.ToString() + ")");
                         toCalculate1 = toCalculate1.Replace(',', '.');
                         double value1 = double.Parse(new DataTable().Compute(toCalculate1, null).ToString());
@@ -130,15 +132,14 @@ namespace oneDimentionOptimization
                     }
                     
                     ResultLabel.Text = symbolOfVariable+" = " + res.ToString();
-                    StatusRichTextBox.Text += Environment.NewLine+ Environment.NewLine+"Ответ: x = " + res.ToString();
+                    StatusRichTextBox.Text += Environment.NewLine+ Environment.NewLine+"Ответ: x = " + res.ToString() + Environment.NewLine + "Количество итераций = " + count.ToString();
 
                 }
                 else if (radioButton2.Checked)  //золотго сечения
                 {
-                    // x
-                    
                     while ((Math.Abs(b - a)) > E)
                     {
+                        count++;
                         double s = b - a;
                         x1 = 0.38 * s + a;
                         x2 = 0.62 * s + a;
@@ -179,38 +180,44 @@ namespace oneDimentionOptimization
                         }
                     }
                     ResultLabel.Text = symbolOfVariable + " = " + res.ToString();
-                    StatusRichTextBox.Text += Environment.NewLine + Environment.NewLine + "Ответ: x = " + res.ToString();
+                    StatusRichTextBox.Text += Environment.NewLine + Environment.NewLine + "Ответ: x = " + res.ToString() + Environment.NewLine + "Количество итераций = " + count.ToString();
                 }
                 else if (radioButton3.Checked)  //Фибоначчи
                 {
-                    int n = 2;
+                    int n = 20;
+                    x1 = a + (b - a) * Fibonacci(n - 2) / Fibonacci(n);
+                    x2 = a + (b - a) * Fibonacci(n - 1) / Fibonacci(n);
 
-                    while ((Math.Abs(b - a)) > E)
+                    while (((Math.Abs(b - a)) > E)||(n<=0))
                     {
-                        x1 = b - Fibonacci(n-1) / Fibonacci(n) * (b - a);
-                        x2 = a + Fibonacci(n - 1) * (b - a) / Fibonacci(n);
-
+                        count++;
                         string toCalculate1 = toCalculateOrigin.Replace(symbolOfVariable, "(" + x1.ToString() + ")");
                         toCalculate1 = toCalculate1.Replace(',', '.');
                         double value1 = double.Parse(new DataTable().Compute(toCalculate1, null).ToString());
                         string toCalculate2 = toCalculateOrigin.Replace(symbolOfVariable, "(" + x2.ToString() + ")");
                         toCalculate2 = toCalculate2.Replace(',', '.');
                         double value2 = double.Parse(new DataTable().Compute(toCalculate2, null).ToString());
-
+                        n--;
                         chart1.Series[0].Points.AddXY(x1, value1);
                         chart1.Series[0].Points.AddXY(x2, value2);
                         if (value1 > value2)
                         {
                             StatusRichTextBox.Text += Environment.NewLine + "f(x1) > f(x2), f(x1) = " + value1.ToString() + ", f(x2) = " + value2.ToString() +
                                 Environment.NewLine + "x1 = " + x1.ToString() + ", x2 = " + x2.ToString();
+                            res = x2;
+                            a = x1;
+                            x1 = x2;
+                            x2 = b - (x1 - a);
 
                         }
                         else if (value1 < value2)
                         {
                             StatusRichTextBox.Text += Environment.NewLine + "f(x1) < f(x2), f(x1) = " + value1.ToString() + ", f(x2) = " + value2.ToString() +
                                 Environment.NewLine + "x1 = " + x1.ToString() + ", x2 = " + x2.ToString();
-
-
+                            res = x1;
+                            b = x2;
+                            x2 = x1;
+                            x1 = a + (b - x2);
                         }
                         else
                         {
@@ -222,7 +229,7 @@ namespace oneDimentionOptimization
                         }
                     }
                     ResultLabel.Text = symbolOfVariable + " = " + res.ToString();
-                    StatusRichTextBox.Text += Environment.NewLine + Environment.NewLine + "Ответ: x = " + res.ToString();
+                    StatusRichTextBox.Text += Environment.NewLine + Environment.NewLine + "Ответ: x = " + res.ToString()+ Environment.NewLine+"Количество итераций = "+count.ToString();
                 }  
             }
             catch
