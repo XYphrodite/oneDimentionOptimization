@@ -82,13 +82,15 @@ namespace oneDimentionOptimization
                 if (radioButton1.Checked)   //половинного деления
                 {
                     x0 = (a - b) / 2;
-                    x1 = a0 + 0.25 * (b0 - a0);
-                    x2 = b0 - 0.25 * (b0 - a0);
+                    //x1 = a0 + 0.25 * (b0 - a0);
+                    //x2 = b0 - 0.25 * (b0 - a0);
                     //int count = 0;
                     //while(count < 100)
                     while ((Math.Abs(b-a))>E)
                     {
                         count++;
+                        x1 = a + 0.25 * (b - a);
+                        x2 = b - 0.25 * (b - a);
                         string toCalculate1 = toCalculateOrigin.Replace(symbolOfVariable, "(" + x1.ToString() + ")");
                         toCalculate1 = toCalculate1.Replace(',', '.');
                         double value1 = double.Parse(new DataTable().Compute(toCalculate1, null).ToString());
@@ -106,8 +108,8 @@ namespace oneDimentionOptimization
                             res = x2;
                             a = x0;
                             x0 = x1;
-                            x1 = a + 0.25 * (b - a);
-                            x2 = b - 0.25 * (b - a);
+                            //x1 = a + 0.25 * (b - a);
+                            //x2 = b - 0.25 * (b - a);
                             
                         }
                         else if (value1 < value2)
@@ -117,8 +119,8 @@ namespace oneDimentionOptimization
                             res = x1;
                             b = x0;
                             x0 = x2;
-                            x1 = a + 0.25 * (b - a);
-                            x2 = b - 0.25 * (b - a);
+                            //x1 = a + 0.25 * (b - a);
+                            //x2 = b - 0.25 * (b - a);
 
                         }
                         else
@@ -184,7 +186,10 @@ namespace oneDimentionOptimization
                 }
                 else if (radioButton3.Checked)  //Фибоначчи
                 {
-                    int n = 20;
+                    int n=1;
+                    while(((Math.Abs(b - a) / E) > Fibonacci(n))){
+                        n++;
+                    }
                     x1 = a + (b - a) * Fibonacci(n - 2) / Fibonacci(n);
                     x2 = a + (b - a) * Fibonacci(n - 1) / Fibonacci(n);
 
