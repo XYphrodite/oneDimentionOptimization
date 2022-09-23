@@ -1,15 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Forms.DataVisualization.Charting;
 
 namespace oneDimentionOptimization
 {
@@ -26,8 +19,6 @@ namespace oneDimentionOptimization
         {
             StatusRichTextBox.Clear();
             //-2*x^3 + 6*x^2 + 4
-            //StatusRichTextBox.Text += "Ответ: x = " + new DataTable().Compute("–2*(-4.25)*(-4.25)*(-4.25)+6*(-4.25)*(-4.25)+4", null).ToString();
-            //return;
             chart1.Series[0].Points.Clear();
             chart1.Series[1].Points.Clear();
             try
@@ -61,9 +52,6 @@ namespace oneDimentionOptimization
                     }
                     toCalculateOrigin+= function[i];
                 }
-                //toCalculateOrigin = toCalculateOrigin.Replace(symbolOfVariable, "(" + "4" + ")");
-                ////double value = double.Parse(new DataTable().Compute(toCalculateOrigin, null).ToString());
-                //StatusRichTextBox.Text += "Ответ: x = " + new DataTable().Compute(toCalculateOrigin, null).ToString();
                 a0 = double.Parse(a0TextBox.Text);
                 b0 = double.Parse(b0TextBox.Text);
                 E = double.Parse(EtextBox.Text);
@@ -82,10 +70,6 @@ namespace oneDimentionOptimization
                 if (radioButton1.Checked)   //половинного деления
                 {
                     x0 = (a - b) / 2;
-                    //x1 = a0 + 0.25 * (b0 - a0);
-                    //x2 = b0 - 0.25 * (b0 - a0);
-                    //int count = 0;
-                    //while(count < 100)
                     while ((Math.Abs(b-a))>E)
                     {
                         count++;
@@ -100,7 +84,6 @@ namespace oneDimentionOptimization
                         
                         chart1.Series[0].Points.AddXY(x1, value1);
                         chart1.Series[0].Points.AddXY(x2, value2);
-                        //count++;
                         if (value1 > value2)
                         {
                             StatusRichTextBox.Text += Environment.NewLine + "f(x1) > f(x2), f(x1) = " + value1.ToString() + ", f(x2) = " + value2.ToString() +
@@ -108,9 +91,6 @@ namespace oneDimentionOptimization
                             res = x2;
                             a = x0;
                             x0 = x1;
-                            //x1 = a + 0.25 * (b - a);
-                            //x2 = b - 0.25 * (b - a);
-                            
                         }
                         else if (value1 < value2)
                         {
@@ -119,9 +99,6 @@ namespace oneDimentionOptimization
                             res = x1;
                             b = x0;
                             x0 = x2;
-                            //x1 = a + 0.25 * (b - a);
-                            //x2 = b - 0.25 * (b - a);
-
                         }
                         else
                         {
@@ -162,7 +139,6 @@ namespace oneDimentionOptimization
                                 Environment.NewLine + "x1 = " + x1.ToString() + ", x2 = " + x2.ToString();
                             res = x2;
                             a = x1;
-
                         }
                         else if (value1 < value2)
                         {
@@ -170,7 +146,6 @@ namespace oneDimentionOptimization
                                 Environment.NewLine + "x1 = " + x1.ToString() + ", x2 = " + x2.ToString();
                             res = x1;
                             b = x2;
-
                         }
                         else
                         {
@@ -178,7 +153,6 @@ namespace oneDimentionOptimization
                             StatusRichTextBox.Text += Environment.NewLine + "f(x1) = f(x2), f(x1) = " + value1.ToString() + ", f(x2) = " + value2.ToString() +
                                 Environment.NewLine + "x1 = " + x1.ToString() + ", x2 = " + x2.ToString();
                             break;
-
                         }
                     }
                     ResultLabel.Text = symbolOfVariable + " = " + res.ToString();
@@ -213,7 +187,6 @@ namespace oneDimentionOptimization
                             a = x1;
                             x1 = x2;
                             x2 = b - (x1 - a);
-
                         }
                         else if (value1 < value2)
                         {
@@ -230,7 +203,6 @@ namespace oneDimentionOptimization
                             StatusRichTextBox.Text += Environment.NewLine + "f(x1) = f(x2), f(x1) = " + value1.ToString() + ", f(x2) = " + value2.ToString() +
                                 Environment.NewLine + "x1 = " + x1.ToString() + ", x2 = " + x2.ToString();
                             break;
-
                         }
                     }
                     ResultLabel.Text = symbolOfVariable + " = " + res.ToString();
@@ -241,8 +213,6 @@ namespace oneDimentionOptimization
             {
                 StatusRichTextBox.Text = "!>Не удалось!";
             }
-            
-            
         }
 
         int Fibonacci(int a)
